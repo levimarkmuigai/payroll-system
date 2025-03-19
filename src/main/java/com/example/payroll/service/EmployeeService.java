@@ -2,6 +2,12 @@ package com.example.payroll.service;
 
 import com.example.payroll.model.Employee;
 import com.example.payroll.repositories.EmployeeRepository;
+import com.example.payroll.model.NHIFConfig;
+import com.example.payroll.model.NSSFConfig;
+import com.example.payroll.model.TaxBand;
+import com.example.payroll.repositories.NHIFConfigRepository;
+import com.example.payroll.repositories.NSSFConfigRepository;
+import com.example.payroll.repositories.TaxBandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
