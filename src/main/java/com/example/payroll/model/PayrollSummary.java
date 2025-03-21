@@ -13,5 +13,6 @@ public record PayrollSummary(
     double nhifDeduction,
     double nssfDeduction,
     double paye,
-    double AllowanceConfig
+    double allowance,
+    double netSalary
 ){}
