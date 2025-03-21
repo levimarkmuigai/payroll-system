@@ -3,8 +3,10 @@ package com.example.payroll.service;
 import com.example.payroll.model.Employee;
 import com.example.payroll.repositories.EmployeeRepository;
 import com.example.payroll.model.NHIFConfig;
+import com.example.payroll.model.AllowanceConfig;
 import com.example.payroll.model.NSSFConfig;
 import com.example.payroll.model.TaxBand;
+import com.example.payroll.repositories.AllownanceConfigRepository;
 import com.example.payroll.repositories.NHIFConfigRepository;
 import com.example.payroll.repositories.NSSFConfigRepository;
 import com.example.payroll.repositories.TaxBandRepository;
@@ -21,18 +23,20 @@ public class EmployeeService {
     private final NHIFConfigRepository nhifConfigRepository;
     private final NSSFConfigRepository nssfConfigRepository;
     private final TaxBandRepository taxBandRepository;
-    
+    private final AllownanceConfigRepository allowanceConfigRepository;
 
 
     @Autowired // Construtor injection for the repository
     public EmployeeService(EmployeeRepository employeeRepository
             , NHIFConfigRepository nhifConfigRepository
             , NSSFConfigRepository nssfConfigRepository
-            , TaxBandRepository taxBandRepository){ 
+            , TaxBandRepository taxBandRepository
+            , AllownanceConfigRepository allowanceConfigRepository){ 
         this.employeeRepository = employeeRepository;
         this.nhifConfigRepository = nhifConfigRepository;
         this.nssfConfigRepository = nssfConfigRepository;
         this.taxBandRepository = taxBandRepository;
+        this.allowanceConfigRepository = allowanceConfigRepository;
     }
 
     // Method to retrieve the Employees from the database
@@ -119,5 +123,26 @@ public class EmployeeService {
 
         double tier2Contribution = tier2Base * (nssfConfig.getTierIIRate().doubleValue() / 100);
         return tier1Contribution + tier2Contribution; 
+    }
+
+    /**
+     * Calculate the total allowance of the employee
+     * 
+     * @param employee the Employee whose total allowance is to be calculated
+     * @return the calculated total allowance amount
+    */
+    public double CalculateTotalAllowance(Employee employee){
+        double basicSalary = employee.getBasicSalary();
+        double totalAllowance = 0;
+
+       List<AllowanceConfig> allowanceConfig = allowanceConfigRepository.findAll();
+       for(AllowanceConfig allowance : allowanceConfig){
+            if(allowance.getIsPercentage()){
+                totalAllowance += basicSalary * (allowance.getValue() / 100);
+            }else{
+                totalAllowance += allowance.getValue();
+            }
+        }
+        return totalAllowance;
     }
 }
