@@ -77,4 +77,28 @@ public class EmployeeService {
         }
         return taxDue;
     }
+
+    /**
+     * 
+     * Calculate the NHIF deduction based on the employee's basic salary and NHIF bands
+     * 
+     * @param employee the Employee whose NHIF deduction is to be calculated
+     * @return the calculated NHIF deduction amount
+    */
+    public double calculateNHIF(Employee employee){
+        NHIFConfig nhifconfig = nhifConfigRepository.findAll().stream().findFirst().orElse(new NHIFConfig());
+        double grossSalary = employee.getBasicSalary();
+        double nhifDeduction =  grossSalary * (nhifconfig.getRate().doubleValue() / 100);
+
+        // Ensure deduction is not less than minimum
+        if(nhifDeduction > nhifconfig.getMinContribution().doubleValue()){
+            nhifDeduction = nhifconfig.getMinContribution().doubleValue();
+        }
+
+        if(nhifDeduction > 0 && nhifDeduction >nhifconfig.getMaxContribution().doubleValue()){
+            nhifDeduction = nhifconfig.getMaxContribution().doubleValue();
+        }
+
+        return nhifDeduction;
+    }
 }

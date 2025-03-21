@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NHIFConfigRepository extends JpaRepository<NHIFConfig, Long>{
+
 }
