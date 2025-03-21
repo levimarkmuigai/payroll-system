@@ -101,4 +101,22 @@ public class EmployeeService {
 
         return nhifDeduction;
     }
+
+    /**
+     * Calculate the NSSF deduction based on the employee's basic salary and NSSF bands
+     * 
+     * @param employee the Employee whose NSSF deduction is to be calculated
+     * @return the calculated NSSF deduction amount
+    */
+    public double calculateNSSF(Employee employee){
+        NSSFConfig nssfConfig = nssfConfigRepository.findAll().stream().findFirst().orElse(new NSSFConfig());
+        double basicSalary = employee.getBasicSalary();
+        
+        // Calculation Logic using the NSSF tier
+        double tier1Contribution = Math.min(basicSalary, nssfConfig.getTierILimit().doubleValue());
+        double tier2Base = Math.min(Math.max(basicSalary  - nssfConfig.getTierIILimit().doubleValue(), 0), nssfConfig.getTierIILimit().doubleValue());
+
+        double tier2Contribution = tier2Base * (nssfConfig.getTierIIRate().doubleValue() / 100);
+        return tier1Contribution + tier2Contribution; 
+    }
 }
