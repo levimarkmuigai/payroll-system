@@ -70,8 +70,8 @@ public class PayrollService {
             grossSalary,           // grossSalary
             nhif,                  // nhifDeduction
             nssf,                  // nssfDeduction
-            paye,
-            netSalary,                  // paye
+            paye,                  // paye
+            netSalary,             // netSalary  
             allowances         // allowanceConfig (the total allowances calculated)
         );
     }
