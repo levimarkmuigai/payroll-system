@@ -3,8 +3,10 @@ package com.example.payroll.service;
 import com.example.payroll.model.Employee;
 import com.example.payroll.repositories.EmployeeRepository;
 import com.example.payroll.model.NHIFConfig;
+import com.example.payroll.model.AllowanceConfig;
 import com.example.payroll.model.NSSFConfig;
 import com.example.payroll.model.TaxBand;
+import com.example.payroll.repositories.AllownanceConfig;
 import com.example.payroll.repositories.NHIFConfigRepository;
 import com.example.payroll.repositories.NSSFConfigRepository;
 import com.example.payroll.repositories.TaxBandRepository;
@@ -21,17 +23,20 @@ public class EmployeeService {
     private final NHIFConfigRepository nhifConfigRepository;
     private final NSSFConfigRepository nssfConfigRepository;
     private final TaxBandRepository taxBandRepository;
+    private final AllowanceConfig allowanceConfig;
 
 
     @Autowired // Construtor injection for the repository
     public EmployeeService(EmployeeRepository employeeRepository
             , NHIFConfigRepository nhifConfigRepository
             , NSSFConfigRepository nssfConfigRepository
-            , TaxBandRepository taxBandRepository) {
+            , TaxBandRepository taxBandRepository
+            , AllowanceConfig allowanceConfig){ 
         this.employeeRepository = employeeRepository;
         this.nhifConfigRepository = nhifConfigRepository;
         this.nssfConfigRepository = nssfConfigRepository;
         this.taxBandRepository = taxBandRepository;
+        this.allowanceConfig = allowanceConfig;
     }
 
     // Method to retrieve the Employees from the database
