@@ -7,9 +7,10 @@ import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import ManageConfigurations from './pages/ManageConfigurations';
 import PayrollReports from './pages/PayrollReports';
-import LeaveApplications from './pages/LeaveApplications';
 import Payslips from './pages/Payslips';
 import './App.css'; // App-specific styles
+import LeaveOverview from './pages/LeaveOverview';
+import EmployeeSearch from './pages/EmployeeSearch';
 
 function App() {
   return (
@@ -20,9 +21,10 @@ function App() {
         <main className="main-content" aria-label="Main content area">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/employees" element={<EmployeeSearch />} />
             <Route path="/configurations" element={<ManageConfigurations />} />
             <Route path="/reports" element={<PayrollReports />} />
-            <Route path="/leave" element={<LeaveApplications />} />
+            <Route path="/leave" element={<LeaveOverview />} />
             <Route path="/payslips" element={<Payslips />} />
             {/* Redirect any unknown routes to dashboard */}
             <Route path="*" element={<Navigate to="/" />} />

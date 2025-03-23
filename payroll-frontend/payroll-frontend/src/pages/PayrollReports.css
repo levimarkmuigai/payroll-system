@@ -1,0 +1,67 @@
+/* src/pages/PayrollReports.css */
+
+/* Container styling */
+.payroll-reports {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.reports-title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Table container to allow horizontal scrolling on small screens */
+.reports-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+/* Table styling */
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.reports-table th {
+  background-color: #007acc;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Zebra striping for rows */
+.reports-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Placeholder for graphical reports */
+.reports-graph-placeholder {
+  text-align: center;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .reports-table th,
+  .reports-table td {
+    padding: 8px;
+  }
+}

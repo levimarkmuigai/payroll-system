@@ -1,0 +1,38 @@
+/* src/components/Header.css */
+
+/* Basic header styling */
+.header {
+    background-color: #f5f5f5;  /* A light, neutral background */
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;  /* Subtle separator */
+  }
+  
+  /* Styling for the main heading in the header */
+  .header h1 {
+    margin: 0;
+    font-size: 2rem;  /* Clear, large typography for the title */
+    color: #333;  /* High contrast text color */
+    font-weight: bold;
+  }
+  
+  /* Styling for the subtitle or description text */
+  .header p {
+    margin-top: 8px;
+    font-size: 1rem;
+    color: #666;  /* A softer color for secondary text */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .header {
+      padding: 10px;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+    }
+    .header p {
+      font-size: 0.9rem;
+    }
+  }
+  

@@ -1,0 +1,56 @@
+/* src/pages/LeaveOverview.css */
+
+/* Container for the leave overview module */
+.leave-overview-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Heading styling */
+.leave-overview-heading {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Card styling */
+.leave-overview-card {
+  padding: 20px;
+  border: 1px solid #007acc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+/* Number display styling */
+.overview-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007acc;
+  margin: 0;
+}
+
+/* Label styling */
+.overview-label {
+  font-size: 1rem;
+  color: #555;
+  margin: 5px 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .leave-overview-container {
+    padding: 15px;
+  }
+  .overview-number {
+    font-size: 2rem;
+  }
+  .leave-overview-heading {
+    font-size: 1.5rem;
+  }
+}

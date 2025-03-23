@@ -13,6 +13,11 @@ function Navigation() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/employees" activeclassname="active">
+            Employee Search
+          </NavLink>
+        </li>  
+        <li>
           <NavLink to="/configurations" activeclassname="active">
             Manage Configurations
           </NavLink>

@@ -1,58 +1,111 @@
-// src/pages/ManageConfigurations.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
+import "./ManageConfigurations.css";
 
-// Placeholder API integration (you can replace with real API calls)
-const fetchConfigurations = () => {
-  return Promise.resolve({
-    taxBands: [
-      { id: 1, lowerLimit: 0, upperLimit: 24000, rate: 10 },
-      { id: 2, lowerLimit: 24001, upperLimit: 32333, rate: 25 },
-      // add more bands as needed...
-    ],
-    nhif: { rate: 2.75, minContribution: 300, maxContribution: 0 },
-    nssf: { tier1LowerLimit: 8000, tier1Rate: 6, tier2LowerLimit: 8001, tier2UpperLimit: 72000, tier2Rate: 6 },
+const ManageConfigurations = () => {
+  const [config, setConfig] = useState({
+    taxRate: "",
+    deductionPercentage: "",
+    paymentFrequency: "monthly",
+    enablePayrollRules: true,
   });
-};
+  const [message, setMessage] = useState(null);
+  const [errors, setErrors] = useState({});
 
-function ManageConfigurations() {
-  const [configurations, setConfigurations] = useState(null);
+  const validate = () => {
+    let errors = {};
+    if (config.taxRate < 0 || config.taxRate > 50) {
+      errors.taxRate = "Tax rate must be between 0% and 50%.";
+    }
+    if (config.deductionPercentage < 0 || config.deductionPercentage > 100) {
+      errors.deductionPercentage = "Deduction must be between 0% and 100%.";
+    }
+    return errors;
+  };
 
-  useEffect(() => {
-    // Simulate API call
-    fetchConfigurations().then((data) => {
-      setConfigurations(data);
-    });
-  }, []);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setConfig((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
+    setMessage("Configurations saved successfully!");
+    setTimeout(() => setMessage(null), 3000);
+  };
 
   return (
-    <section aria-labelledby="configurations-heading">
-      <h2 id="configurations-heading">Manage Configurations</h2>
-      {configurations ? (
-        <div className="configurations">
-          <h3>Tax Bands</h3>
-          <ul>
-            {configurations.taxBands.map((band) => (
-              <li key={band.id}>
-                {band.lowerLimit} - {band.upperLimit} : {band.rate}%
-              </li>
-            ))}
-          </ul>
-          <h3>NHIF Settings</h3>
-          <p>
-            Rate: {configurations.nhif.rate}% | Min: {configurations.nhif.minContribution} | Max: {configurations.nhif.maxContribution || 'No Max'}
-          </p>
-          <h3>NSSF Settings</h3>
-          <p>
-            Tier I: Up to {configurations.nssf.tier1LowerLimit} at {configurations.nssf.tier1Rate}%<br />
-            Tier II: {configurations.nssf.tier2LowerLimit} - {configurations.nssf.tier2UpperLimit} at {configurations.nssf.tier2Rate}%
-          </p>
-          {/* Additional configuration management controls (forms, buttons) can be added here */}
+    <div className="config-container">
+      <h2>Manage Payroll Configurations</h2>
+      {message && <p className="success-message">{message}</p>}
+      <form onSubmit={handleSubmit} className="config-form">
+        <label>
+          Tax Rate (%):
+          <input
+            type="number"
+            name="taxRate"
+            value={config.taxRate}
+            onChange={handleChange}
+          />
+          {errors.taxRate && <span className="error">{errors.taxRate}</span>}
+        </label>
+
+        <label>
+          Deduction Percentage (%):
+          <input
+            type="number"
+            name="deductionPercentage"
+            value={config.deductionPercentage}
+            onChange={handleChange}
+          />
+          {errors.deductionPercentage && (
+            <span className="error">{errors.deductionPercentage}</span>
+          )}
+        </label>
+
+        <label>
+          Payment Frequency:
+          <select
+            name="paymentFrequency"
+            value={config.paymentFrequency}
+            onChange={handleChange}
+          >
+            <option value="weekly">Weekly</option>
+            <option value="bi-weekly">Bi-Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </label>
+
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            name="enablePayrollRules"
+            checked={config.enablePayrollRules}
+            onChange={handleChange}
+          />
+          Enable Payroll Rules
+        </label>
+
+        <div className="button-group">
+          <button type="submit" className="save-btn">Save</button>
+          <button type="button" className="cancel-btn" onClick={() => setConfig({
+            taxRate: "",
+            deductionPercentage: "",
+            paymentFrequency: "monthly",
+            enablePayrollRules: true,
+          })}>Cancel</button>
         </div>
-      ) : (
-        <p>Loading configurations...</p>
-      )}
-    </section>
+      </form>
+    </div>
   );
-}
+};
 
 export default ManageConfigurations;
