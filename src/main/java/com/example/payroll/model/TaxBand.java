@@ -1,11 +1,9 @@
 package com.example.payroll.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tax_band")
-
 public class TaxBand {
 
     @Id
@@ -29,33 +27,33 @@ public class TaxBand {
         this.taxRate = taxRate;
     }   
 
-    // *****Getters and Setters *****
+    // Standard getters and setters
 
     public Long getId() {
         return id;
     }
 
-    public double getlowerLimit(){
+    public double getLowerLimit() {
         return lowerLimit;
     }
 
-    public void setlowerLimit(double lowerLimit){
+    public void setLowerLimit(double lowerLimit) {
         this.lowerLimit = lowerLimit;
     }
 
-    public double getupperLimit(){
+    public double getUpperLimit() {
         return upperLimit;
     }
 
-    public void setupperLimit(double upperLimit){
+    public void setUpperLimit(double upperLimit) {
         this.upperLimit = upperLimit;
     }
 
-    public double gettaxRate(){
+    public double getTaxRate() {
         return taxRate;
     }
 
-    public void settaxRate(double taxRate){
+    public void setTaxRate(double taxRate) {
         this.taxRate = taxRate;
     }
 }

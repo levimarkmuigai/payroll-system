@@ -2,9 +2,9 @@ package com.example.payroll.service;
 
 import com.example.payroll.model.Employee;
 import com.example.payroll.model.NHIFConfig;
-import com.example.payroll.model.AllowanceConfig;
 import com.example.payroll.model.NSSFConfig;
 import com.example.payroll.model.TaxBand;
+import com.example.payroll.model.AllowanceConfig;
 import com.example.payroll.model.PayrollSummary;
 import com.example.payroll.repositories.EmployeeRepository;
 import com.example.payroll.repositories.AllownanceConfigRepository;
@@ -22,7 +22,7 @@ import java.util.Optional;
 public class PayrollService {
 
     private final EmployeeRepository employeeRepository;
-    private final AllownanceConfigRepository allownanceConfigRepository;
+    private final AllownanceConfigRepository allowanceConfigRepository;
     private final NHIFConfigRepository nhifConfigRepository;
     private final NSSFConfigRepository nssfConfigRepository;
     private final TaxBandRepository taxBandRepository;
@@ -37,21 +37,23 @@ public class PayrollService {
      * @param allowanceConfigRepository Repository for Allowance configurations.
      */
     @Autowired
-    public PayrollService(EmployeeRepository employeeRepository, NHIFConfigRepository nhifConfigRepository,
-                          NSSFConfigRepository nssfConfigRepository, TaxBandRepository taxBandRepository,
+    public PayrollService(EmployeeRepository employeeRepository, 
+                          NHIFConfigRepository nhifConfigRepository,
+                          NSSFConfigRepository nssfConfigRepository, 
+                          TaxBandRepository taxBandRepository,
                           AllownanceConfigRepository allowanceConfigRepository) {
         this.employeeRepository = employeeRepository;
         this.nhifConfigRepository = nhifConfigRepository;
         this.nssfConfigRepository = nssfConfigRepository;
         this.taxBandRepository = taxBandRepository;
-        this.allownanceConfigRepository = allowanceConfigRepository;
+        this.allowanceConfigRepository = allowanceConfigRepository;
     }
 
     /**
-     * Calculates the payroll for a given employee and returns a PayrollSummary DTO.
+     * Calculates the payroll for a given employee and returns a PayrollSummary record.
      * 
-     * @param employeeId The ID of the employee for whom the payroll is to be calculated.
-     * @return PayrollSummary DTO containing the payroll details.
+     * @param employeeId The ID of the employee.
+     * @return PayrollSummary containing computed payroll details.
      */
     public PayrollSummary calculatePayroll(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -61,48 +63,65 @@ public class PayrollService {
         double allowances = calculateTotalAllowance(employee);
         double grossSalary = basicSalary + allowances;
         double paye = calculatePAYE(employee);
-        double nhif = calculateNHIF(employee);
-        double nssf = calculateNSSF(employee);
-        double totalDeductions = paye + nhif + nssf;
+        double nhifDeduction = calculateNHIF(employee);
+        double nssfDeduction = calculateNSSF(employee);
+        double totalDeductions = paye + nhifDeduction + nssfDeduction;
         double netSalary = grossSalary - totalDeductions;
 
-        // Adjust the constructor parameters as needed.
-        // Assuming PayrollSummary has the following constructor:
-        // PayrollSummary(Long employeeId, String employeeName, double basicSalary,
-        //                double grossSalary, double nhifDeduction, double nssfDeduction,
-        //                double paye, double netSalary, double allowanceConfig)
         return new PayrollSummary(
-            employee.getId(),      // employeeId
-            employee.getName(),    // employeeName
-            basicSalary,           // basicSalary
-            grossSalary,           // grossSalary
-            nhif,                  // nhifDeduction
-            nssf,                  // nssfDeduction
-            paye,                  // paye
-            netSalary,             // netSalary  
-            allowances             // allowanceConfig (total allowances)
+            employee.getId(),
+            employee.getName(),
+            basicSalary,
+            grossSalary,
+            nhifDeduction,
+            nssfDeduction,
+            paye,
+            allowances,
+            netSalary
         );
     }
 
     /**
-     * Calculates the PAYE (income tax) based on the employee's basic salary and tax bands.
+     * Calculates the total allowance for the employee based on configured allowances.
+     *
+     * @param employee the Employee whose allowance is to be calculated.
+     * @return the total allowance.
+     */
+    public double calculateTotalAllowance(Employee employee) {
+        double basicSalary = employee.getBasicSalary();
+        double totalAllowance = 0;
+
+        List<AllowanceConfig> allowances = allowanceConfigRepository.findAll();
+        for (AllowanceConfig allowance : allowances) {
+            if (allowance.getIsPercentage()) {
+                totalAllowance += basicSalary * (allowance.getValue() / 100);
+            } else {
+                totalAllowance += allowance.getValue();
+            }
+        }
+        return totalAllowance;
+    }
+
+    /**
+     * Calculates the PAYE based on the employee's basic salary and tax bands.
      *
      * @param employee the Employee whose tax is to be calculated.
-     * @return the calculated PAYE amount.
+     * @return calculated PAYE amount.
      */
     public double calculatePAYE(Employee employee) {
         double basicSalary = employee.getBasicSalary();
         List<TaxBand> taxBands = taxBandRepository.findAll();
         double taxDue = 0;
 
-        // Sort the tax bands by lower limit for progressive calculation.
-        taxBands.sort((a, b) -> Double.compare(a.getlowerLimit(), b.getlowerLimit()));
+        // Sort tax bands by lower limit in ascending order
+        taxBands.sort((a, b) -> Double.compare(a.getLowerLimit(), b.getLowerLimit()));
 
         double remainingSalary = basicSalary;
         for (TaxBand band : taxBands) {
             if (remainingSalary <= 0) break;
-            double taxableInBand = Math.min(remainingSalary, band.getupperLimit() - band.getlowerLimit());
-            taxDue += taxableInBand * (band.gettaxRate() / 100);
+            double bandRange = band.getUpperLimit() - band.getLowerLimit();
+            double taxableInBand = Math.min(remainingSalary, bandRange);
+            taxDue += taxableInBand * (band.getTaxRate() / 100);
             remainingSalary -= taxableInBand;
         }
         return taxDue;
@@ -110,16 +129,15 @@ public class PayrollService {
 
     /**
      * Calculates the NHIF deduction based on the employee's basic salary and the applicable NHIF configuration.
-     * This version uses the lowerBound and upperBound to select the correct configuration.
      *
      * @param employee the Employee whose NHIF deduction is to be calculated.
-     * @return the calculated NHIF deduction amount.
+     * @return calculated NHIF deduction.
      */
     public double calculateNHIF(Employee employee) {
         double basicSalary = employee.getBasicSalary();
         BigDecimal basicSalaryBD = BigDecimal.valueOf(basicSalary);
         
-        // Find the NHIF configuration where the basic salary is within the configured bounds.
+        // Find the NHIF configuration where the salary falls between lowerBound and upperBound.
         Optional<NHIFConfig> configOpt = nhifConfigRepository.findAll().stream()
             .filter(config -> basicSalaryBD.compareTo(config.getLowerBound()) >= 0 &&
                               basicSalaryBD.compareTo(config.getUpperBound()) <= 0)
@@ -130,12 +148,10 @@ public class PayrollService {
         
         double nhifDeduction = basicSalary * (config.getRate().doubleValue() / 100);
 
-        // Enforce minimum contribution.
         if (nhifDeduction < config.getMinContribution().doubleValue()) {
             nhifDeduction = config.getMinContribution().doubleValue();
         }
-        // Enforce maximum contribution.
-        if (nhifDeduction > config.getMaxContribution().doubleValue()) {
+        if (config.getMaxContribution().doubleValue() > 0 && nhifDeduction > config.getMaxContribution().doubleValue()) {
             nhifDeduction = config.getMaxContribution().doubleValue();
         }
         return nhifDeduction;
@@ -145,38 +161,24 @@ public class PayrollService {
      * Calculates the NSSF deduction based on the employee's basic salary and NSSF configuration.
      *
      * @param employee the Employee whose NSSF deduction is to be calculated.
-     * @return the calculated NSSF deduction amount.
+     * @return calculated NSSF deduction.
      */
     public double calculateNSSF(Employee employee) {
-        NSSFConfig nssfConfig = nssfConfigRepository.findAll().stream().findFirst().orElse(new NSSFConfig());
+        NSSFConfig nssfConfig = nssfConfigRepository.findAll().stream().findFirst()
+                .orElse(new NSSFConfig());
         double basicSalary = employee.getBasicSalary();
 
-        // Calculation Logic using the NSSF tier
-        double tier1Contribution = Math.min(basicSalary, nssfConfig.getTierILimit().doubleValue());
-        double tier2Base = Math.min(Math.max(basicSalary - nssfConfig.getTierIILimit().doubleValue(), 0),
-                                    nssfConfig.getTierIILimit().doubleValue());
-        double tier2Contribution = tier2Base * (nssfConfig.getTierIIRate().doubleValue() / 100);
-        return tier1Contribution + tier2Contribution;
-    }
+        double tierILimit = nssfConfig.getTierILimit().doubleValue();
+        double tierIRate = nssfConfig.getTierIRate().doubleValue();
+        double tierIContribution = Math.min(basicSalary, tierILimit) * (tierIRate / 100);
 
-    /**
-     * Calculates the total allowance of the employee based on the configured allowances.
-     *
-     * @param employee the Employee whose total allowance is to be calculated.
-     * @return the calculated total allowance amount.
-     */
-    public double calculateTotalAllowance(Employee employee) {
-        double basicSalary = employee.getBasicSalary();
-        double totalAllowance = 0;
-
-        List<AllowanceConfig> allowances = allownanceConfigRepository.findAll();
-        for (AllowanceConfig allowance : allowances) {
-            if (allowance.getIsPercentage()) {
-                totalAllowance += basicSalary * (allowance.getValue() / 100);
-            } else {
-                totalAllowance += allowance.getValue();
-            }
+        double tierIILimit = nssfConfig.getTierIILimit().doubleValue();
+        double tierIIRate = nssfConfig.getTierIIRate().doubleValue();
+        double tierIIContribution = 0;
+        if (basicSalary > tierILimit) {
+            double taxableForTierII = Math.min(basicSalary, tierIILimit) - tierILimit;
+            tierIIContribution = taxableForTierII * (tierIIRate / 100);
         }
-        return totalAllowance;
+        return tierIContribution + tierIIContribution;
     }
 }

@@ -68,9 +68,9 @@ public class TaxBandController {
     public ResponseEntity<TaxBand> updateTaxBand(@PathVariable Long id, @RequestBody TaxBand updatedTaxBand) {
         return taxBandRepository.findById(id)
                 .map(existingTaxBand -> {
-                    existingTaxBand.setlowerLimit(updatedTaxBand.getlowerLimit());
-                    existingTaxBand.setupperLimit(updatedTaxBand.getupperLimit());
-                    existingTaxBand.settaxRate(updatedTaxBand.gettaxRate());
+                    existingTaxBand.setLowerLimit(updatedTaxBand.getLowerLimit());
+                    existingTaxBand.setUpperLimit(updatedTaxBand.getUpperLimit());
+                    existingTaxBand.setTaxRate(updatedTaxBand.getTaxRate());
                     TaxBand savedTaxBand = taxBandRepository.save(existingTaxBand);
                     return ResponseEntity.ok(savedTaxBand);
                 })
