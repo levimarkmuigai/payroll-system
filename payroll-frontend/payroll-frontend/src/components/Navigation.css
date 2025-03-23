@@ -1,0 +1,19 @@
+/* src/components/Navigation.css */
+.navigation ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    background-color: #007acc;
+  }
+  
+  .navigation a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .navigation a.active {
+    text-decoration: underline;
+  }
+  
