@@ -1,23 +1,19 @@
 package com.example.payroll.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "allowance-configs")
 public class AllowanceConfig {
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Type of allowance
     private String type;
 
-    // Stored as a percentage or full value
+    // Stored as a percentage or fixed value
     private double value;
 
     // Check if it's a percentage or fixed value
@@ -31,9 +27,8 @@ public class AllowanceConfig {
         this.isPercentage = isPercentage;
     }
 
-    // ***************Getters and setters**********************
+    // Getters and setters
 
-    // For the Id 
     public Long getId(){
         return id;
     }
@@ -47,7 +42,8 @@ public class AllowanceConfig {
         return type;
     }
 
-    public void setId(String type){
+    // setter for type
+    public void setType(String type){
         this.type = type;
     }
 
@@ -60,7 +56,7 @@ public class AllowanceConfig {
         this.value = value;
     }
 
-    // Percentage
+    // For isPercentage
     public boolean getIsPercentage(){
         return isPercentage;
     }
