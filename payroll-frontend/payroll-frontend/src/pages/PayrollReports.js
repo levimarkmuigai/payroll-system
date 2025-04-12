@@ -10,7 +10,7 @@ const PayrollReports = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        // Replace with your actual API endpoint URL
+        
         const response = await fetch('http://localhost:8080/api/payrollreports');
         if (!response.ok) {
           throw new Error('Failed to fetch payroll reports');
