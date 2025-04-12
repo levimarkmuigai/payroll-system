@@ -2,7 +2,6 @@ package com.example.payroll.controller;
 
 import com.example.payroll.model.Payslip;
 import com.example.payroll.service.PayslipService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,6 @@ public class PayslipController {
 
     private final PayslipService payslipService;
 
-    @Autowired
     public PayslipController(PayslipService payslipService) {
         this.payslipService = payslipService;
     }
@@ -46,14 +44,14 @@ public class PayslipController {
 
     /**
      * Endpoint for generating monthly payroll reports.
-     * (In a real implementation, you might include query parameters for the month/year.)
+     * (In a real implementation, you might include query parameters for the
+     * month/year.)
      *
      * @return a report (could be in HTML or PDF format) as a string for simplicity.
      */
     @GetMapping("/reports/monthly")
     public ResponseEntity<String> generateMonthlyReport() {
-        // For demonstration, a simple string report is returned.
-        // In a real scenario, you might generate a PDF or HTML report using a reporting library.
+        
         String report = "Monthly Payroll Report\n" +
                 "---------------------------\n" +
                 "Total Payroll Expense: $XXXXX\n" +

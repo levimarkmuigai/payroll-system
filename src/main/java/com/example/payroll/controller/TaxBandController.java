@@ -2,7 +2,6 @@ package com.example.payroll.controller;
 
 import com.example.payroll.model.TaxBand;
 import com.example.payroll.repositories.TaxBandRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +9,8 @@ import java.util.List;
 
 /**
  * REST controller for managing TaxBand configurations.
- * Provides endpoints to create, read, update, and delete tax band configurations.
+ * Provides endpoints to create, read, update, and delete tax band
+ * configurations.
  */
 @RestController
 @RequestMapping("/api/taxbands")
@@ -18,7 +18,6 @@ public class TaxBandController {
 
     private final TaxBandRepository taxBandRepository;
 
-    @Autowired
     public TaxBandController(TaxBandRepository taxBandRepository) {
         this.taxBandRepository = taxBandRepository;
     }
@@ -60,7 +59,7 @@ public class TaxBandController {
     /**
      * Updates an existing TaxBand configuration.
      *
-     * @param id the id of the TaxBand to update.
+     * @param id             the id of the TaxBand to update.
      * @param updatedTaxBand the updated TaxBand data.
      * @return the updated TaxBand configuration wrapped in a ResponseEntity.
      */
@@ -81,7 +80,8 @@ public class TaxBandController {
      * Deletes a TaxBand configuration by its id.
      *
      * @param id the id of the TaxBand to delete.
-     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is successful.
+     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is
+     *         successful.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTaxBand(@PathVariable Long id) {

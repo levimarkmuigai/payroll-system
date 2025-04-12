@@ -2,7 +2,6 @@ package com.example.payroll.controller;
 
 import com.example.payroll.model.AllowanceConfig;
 import com.example.payroll.repositories.AllownanceConfigRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +9,8 @@ import java.util.List;
 
 /**
  * REST controller for managing Allowance configurations.
- * Provides endpoints to create, read, update, and delete allowance configuration data.
+ * Provides endpoints to create, read, update, and delete allowance
+ * configuration data.
  */
 @RestController
 @RequestMapping("/api/allowance-config")
@@ -23,7 +23,6 @@ public class AllowanceConfigController {
      *
      * @param allowanceConfigRepository Repository for Allowance configuration data.
      */
-    @Autowired
     public AllowanceConfigController(AllownanceConfigRepository allowanceConfigRepository) {
         this.allowanceConfigRepository = allowanceConfigRepository;
     }
@@ -65,12 +64,15 @@ public class AllowanceConfigController {
     /**
      * Updates an existing Allowance configuration.
      *
-     * @param id the id of the Allowance configuration to update.
+     * @param id                     the id of the Allowance configuration to
+     *                               update.
      * @param updatedAllowanceConfig the updated allowance configuration data.
-     * @return the updated AllowanceConfig wrapped in a ResponseEntity, or 404 if not found.
+     * @return the updated AllowanceConfig wrapped in a ResponseEntity, or 404 if
+     *         not found.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<AllowanceConfig> updateAllowanceConfig(@PathVariable Long id, @RequestBody AllowanceConfig updatedAllowanceConfig) {
+    public ResponseEntity<AllowanceConfig> updateAllowanceConfig(@PathVariable Long id,
+            @RequestBody AllowanceConfig updatedAllowanceConfig) {
         return allowanceConfigRepository.findById(id)
                 .map(existingConfig -> {
                     existingConfig.setType(updatedAllowanceConfig.getType());
@@ -86,16 +88,17 @@ public class AllowanceConfigController {
      * Deletes an Allowance configuration by its id.
      *
      * @param id the id of the Allowance configuration to delete.
-     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is successful,
+     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is
+     *         successful,
      *         or 404 if the configuration is not found.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAllowanceConfig(@PathVariable Long id) {
         return allowanceConfigRepository.findById(id)
-            .map(existingConfig -> {
-                allowanceConfigRepository.delete(existingConfig);
-                return ResponseEntity.noContent().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .map(existingConfig -> {
+                    allowanceConfigRepository.delete(existingConfig);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,10 +1,8 @@
 package com.example.payroll.service;
 
-
 import com.example.payroll.model.Payslip;
 import com.example.payroll.model.PayrollSummary;
 import com.example.payroll.repositories.PayslipRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,7 +14,6 @@ public class PayslipService {
     private final PayrollService payrollService;
     private final PayslipRepository payslipRepository;
 
-    @Autowired
     public PayslipService(PayrollService payrollService, PayslipRepository payslipRepository) {
         this.payrollService = payrollService;
         this.payslipRepository = payslipRepository;
@@ -38,17 +35,17 @@ public class PayslipService {
 
         // Create a Payslip with all 11 required parameters.
         Payslip payslip = new Payslip(
-            employeeId,                // employeeId
-            summary.employeeName(),    // employeeName
-            summary.basicSalary(),     // basicSalary
-            summary.allowances(),      // allowances
-            summary.grossSalary(),     // grossSalary
-            summary.paye(),            // paye
-            summary.nhifDeduction(),   // nhifDeduction
-            summary.nssfDeduction(),   // nssfDeduction
-            totalDeductions,           // totalDeductions
-            summary.netSalary(),       // netSalary
-            LocalDateTime.now()        // generationDate
+                employeeId, // employeeId
+                summary.employeeName(), // employeeName
+                summary.basicSalary(), // basicSalary
+                summary.allowances(), // allowances
+                summary.grossSalary(), // grossSalary
+                summary.paye(), // paye
+                summary.nhifDeduction(), // nhifDeduction
+                summary.nssfDeduction(), // nssfDeduction
+                totalDeductions, // totalDeductions
+                summary.netSalary(), // netSalary
+                LocalDateTime.now() // generationDate
         );
         return payslipRepository.save(payslip);
     }

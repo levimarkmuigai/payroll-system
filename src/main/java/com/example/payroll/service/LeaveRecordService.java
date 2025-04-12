@@ -4,7 +4,6 @@ import com.example.payroll.model.LeaveRecord;
 import com.example.payroll.repositories.LeaveRecordRepository;
 import com.example.payroll.model.Employee;
 import com.example.payroll.repositories.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,7 +15,6 @@ public class LeaveRecordService {
     private final LeaveRecordRepository leaveRecordRepository;
     private final EmployeeRepository employeeRepository;
 
-    @Autowired
     public LeaveRecordService(LeaveRecordRepository leaveRecordRepository, EmployeeRepository employeeRepository) {
         this.leaveRecordRepository = leaveRecordRepository;
         this.employeeRepository = employeeRepository;
@@ -34,7 +32,8 @@ public class LeaveRecordService {
     public LeaveRecord applyForLeave(Long employeeId, LocalDate startDate, LocalDate endDate, String leaveType) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-        LeaveRecord leaveRecord = new LeaveRecord(employee, startDate, endDate, leaveType, "PENDING", LocalDate.now(), null);
+        LeaveRecord leaveRecord = new LeaveRecord(employee, startDate, endDate, leaveType, "PENDING", LocalDate.now(),
+                null);
         return leaveRecordRepository.save(leaveRecord);
     }
 

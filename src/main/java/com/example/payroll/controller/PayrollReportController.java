@@ -4,7 +4,6 @@ import com.example.payroll.model.PayrollSummary;
 import com.example.payroll.repositories.EmployeeRepository;
 import com.example.payroll.service.PayrollService;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +17,6 @@ public class PayrollReportController {
     private final EmployeeRepository employeeRepository;
     private final PayrollService payrollService;
 
-    @Autowired
     public PayrollReportController(EmployeeRepository employeeRepository, PayrollService payrollService) {
         this.employeeRepository = employeeRepository;
         this.payrollService = payrollService;

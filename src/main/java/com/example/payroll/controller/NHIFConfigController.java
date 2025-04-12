@@ -2,7 +2,6 @@ package com.example.payroll.controller;
 
 import com.example.payroll.model.NHIFConfig;
 import com.example.payroll.repositories.NHIFConfigRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +9,8 @@ import java.util.List;
 
 /**
  * REST controller for managing NHIF configurations.
- * Provides endpoints to create, read, update, and delete NHIF configuration data.
+ * Provides endpoints to create, read, update, and delete NHIF configuration
+ * data.
  */
 @RestController
 @RequestMapping("/api/nhif-config")
@@ -23,7 +23,6 @@ public class NHIFConfigController {
      *
      * @param nhifConfigRepository Repository for NHIF configuration data.
      */
-    @Autowired
     public NHIFConfigController(NHIFConfigRepository nhifConfigRepository) {
         this.nhifConfigRepository = nhifConfigRepository;
     }
@@ -47,8 +46,8 @@ public class NHIFConfigController {
     @GetMapping("/{id}")
     public ResponseEntity<NHIFConfig> getNHIFConfigById(@PathVariable Long id) {
         return nhifConfigRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -65,12 +64,14 @@ public class NHIFConfigController {
     /**
      * Updates an existing NHIF configuration.
      *
-     * @param id the id of the NHIF configuration to update.
+     * @param id                the id of the NHIF configuration to update.
      * @param updatedNHIFConfig the updated NHIF configuration data.
-     * @return the updated NHIFConfig wrapped in a ResponseEntity, or 404 if not found.
+     * @return the updated NHIFConfig wrapped in a ResponseEntity, or 404 if not
+     *         found.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<NHIFConfig> updateNHIFConfig(@PathVariable Long id, @RequestBody NHIFConfig updatedNHIFConfig) {
+    public ResponseEntity<NHIFConfig> updateNHIFConfig(@PathVariable Long id,
+            @RequestBody NHIFConfig updatedNHIFConfig) {
         return nhifConfigRepository.findById(id)
                 .map(existingConfig -> {
                     existingConfig.setRate(updatedNHIFConfig.getRate());
@@ -89,16 +90,17 @@ public class NHIFConfigController {
      * Deletes an NHIF configuration by its id.
      *
      * @param id the id of the NHIF configuration to delete.
-     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is successful,
+     * @return a ResponseEntity with HTTP status 204 (No Content) if deletion is
+     *         successful,
      *         or 404 if the configuration is not found.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNHIFConfig(@PathVariable Long id) {
         return nhifConfigRepository.findById(id)
-            .map(nhifConfig -> {
-                nhifConfigRepository.delete(nhifConfig);
-                return ResponseEntity.noContent().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .map(nhifConfig -> {
+                    nhifConfigRepository.delete(nhifConfig);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

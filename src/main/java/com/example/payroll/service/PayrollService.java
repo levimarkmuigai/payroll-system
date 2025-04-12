@@ -11,7 +11,6 @@ import com.example.payroll.repositories.AllownanceConfigRepository;
 import com.example.payroll.repositories.NHIFConfigRepository;
 import com.example.payroll.repositories.NSSFConfigRepository;
 import com.example.payroll.repositories.TaxBandRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,7 +27,8 @@ public class PayrollService {
     private final TaxBandRepository taxBandRepository;
 
     /**
-     * Constructor injection ensures that all required dependencies for payroll processing are available.
+     * Constructor injection ensures that all required dependencies for payroll
+     * processing are available.
      *
      * @param employeeRepository        Repository for employee data.
      * @param nhifConfigRepository      Repository for NHIF configurations.
@@ -36,12 +36,11 @@ public class PayrollService {
      * @param taxBandRepository         Repository for Tax Band configurations.
      * @param allowanceConfigRepository Repository for Allowance configurations.
      */
-    @Autowired
-    public PayrollService(EmployeeRepository employeeRepository, 
-                          NHIFConfigRepository nhifConfigRepository,
-                          NSSFConfigRepository nssfConfigRepository, 
-                          TaxBandRepository taxBandRepository,
-                          AllownanceConfigRepository allowanceConfigRepository) {
+    public PayrollService(EmployeeRepository employeeRepository,
+            NHIFConfigRepository nhifConfigRepository,
+            NSSFConfigRepository nssfConfigRepository,
+            TaxBandRepository taxBandRepository,
+            AllownanceConfigRepository allowanceConfigRepository) {
         this.employeeRepository = employeeRepository;
         this.nhifConfigRepository = nhifConfigRepository;
         this.nssfConfigRepository = nssfConfigRepository;
@@ -50,7 +49,8 @@ public class PayrollService {
     }
 
     /**
-     * Calculates the payroll for a given employee and returns a PayrollSummary record.
+     * Calculates the payroll for a given employee and returns a PayrollSummary
+     * record.
      * 
      * @param employeeId The ID of the employee.
      * @return PayrollSummary containing computed payroll details.
@@ -69,20 +69,20 @@ public class PayrollService {
         double netSalary = grossSalary - totalDeductions;
 
         return new PayrollSummary(
-            employee.getId(),
-            employee.getName(),
-            basicSalary,
-            grossSalary,
-            nhifDeduction,
-            nssfDeduction,
-            paye,
-            allowances,
-            netSalary
-        );
+                employee.getId(),
+                employee.getName(),
+                basicSalary,
+                grossSalary,
+                nhifDeduction,
+                nssfDeduction,
+                paye,
+                allowances,
+                netSalary);
     }
 
     /**
-     * Calculates the total allowance for the employee based on configured allowances.
+     * Calculates the total allowance for the employee based on configured
+     * allowances.
      *
      * @param employee the Employee whose allowance is to be calculated.
      * @return the total allowance.
@@ -118,7 +118,8 @@ public class PayrollService {
 
         double remainingSalary = basicSalary;
         for (TaxBand band : taxBands) {
-            if (remainingSalary <= 0) break;
+            if (remainingSalary <= 0)
+                break;
             double bandRange = band.getUpperLimit() - band.getLowerLimit();
             double taxableInBand = Math.min(remainingSalary, bandRange);
             taxDue += taxableInBand * (band.getTaxRate() / 100);
@@ -128,7 +129,8 @@ public class PayrollService {
     }
 
     /**
-     * Calculates the NHIF deduction based on the employee's basic salary and the applicable NHIF configuration.
+     * Calculates the NHIF deduction based on the employee's basic salary and the
+     * applicable NHIF configuration.
      *
      * @param employee the Employee whose NHIF deduction is to be calculated.
      * @return calculated NHIF deduction.
@@ -136,29 +138,33 @@ public class PayrollService {
     public double calculateNHIF(Employee employee) {
         double basicSalary = employee.getBasicSalary();
         BigDecimal basicSalaryBD = BigDecimal.valueOf(basicSalary);
-        
-        // Find the NHIF configuration where the salary falls between lowerBound and upperBound.
+
+        // Find the NHIF configuration where the salary falls between lowerBound and
+        // upperBound.
         Optional<NHIFConfig> configOpt = nhifConfigRepository.findAll().stream()
-            .filter(config -> basicSalaryBD.compareTo(config.getLowerBound()) >= 0 &&
-                              basicSalaryBD.compareTo(config.getUpperBound()) <= 0)
-            .findFirst();
-        
+                .filter(config -> basicSalaryBD.compareTo(config.getLowerBound()) >= 0 &&
+                        basicSalaryBD.compareTo(config.getUpperBound()) <= 0)
+                .findFirst();
+
         NHIFConfig config = configOpt.orElseGet(() -> nhifConfigRepository.findAll().stream().findFirst()
-            .orElse(new NHIFConfig(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO)));
-        
+                .orElse(new NHIFConfig(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+                        BigDecimal.ZERO)));
+
         double nhifDeduction = basicSalary * (config.getRate().doubleValue() / 100);
 
         if (nhifDeduction < config.getMinContribution().doubleValue()) {
             nhifDeduction = config.getMinContribution().doubleValue();
         }
-        if (config.getMaxContribution().doubleValue() > 0 && nhifDeduction > config.getMaxContribution().doubleValue()) {
+        if (config.getMaxContribution().doubleValue() > 0
+                && nhifDeduction > config.getMaxContribution().doubleValue()) {
             nhifDeduction = config.getMaxContribution().doubleValue();
         }
         return nhifDeduction;
     }
 
     /**
-     * Calculates the NSSF deduction based on the employee's basic salary and NSSF configuration.
+     * Calculates the NSSF deduction based on the employee's basic salary and NSSF
+     * configuration.
      *
      * @param employee the Employee whose NSSF deduction is to be calculated.
      * @return calculated NSSF deduction.

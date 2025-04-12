@@ -2,7 +2,6 @@ package com.example.payroll.controller;
 
 import com.example.payroll.model.Employee;
 import com.example.payroll.repositories.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +16,7 @@ public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeController(EmployeeRepository employeeRepository){
+    public EmployeeController(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
@@ -59,7 +57,7 @@ public class EmployeeController {
     /**
      * Updates an existing employee.
      *
-     * @param id the ID of the employee to update.
+     * @param id              the ID of the employee to update.
      * @param updatedEmployee the updated employee details.
      * @return the updated Employee object wrapped in a ResponseEntity.
      */
@@ -87,7 +85,7 @@ public class EmployeeController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        if(employeeRepository.existsById(id)) {
+        if (employeeRepository.existsById(id)) {
             employeeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {

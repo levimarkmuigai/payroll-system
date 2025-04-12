@@ -1,9 +1,7 @@
 package com.example.payroll.controller;
 
-
 import com.example.payroll.model.PayrollSummary;
 import com.example.payroll.service.PayrollService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -14,17 +12,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/payroll")
 public class PayrollController {
-    
+
     private final PayrollService payrollService;
 
-     /**
+    /**
      * Constructor injection for PayrollService.
      *
      * @param payrollService the service responsible for payroll calculations.
      */
-
-    @Autowired
-    public PayrollController(PayrollService payrollService){
+    public PayrollController(PayrollService payrollService) {
         this.payrollService = payrollService;
     }
 
@@ -35,9 +31,9 @@ public class PayrollController {
      *
      * @param employeeId the unique identifier of the employee.
      * @return a PayrollSummary DTO containing payroll details.
-    */
+     */
     @GetMapping("/{employeeId}")
-    public PayrollSummary getPayrollSummary(@PathVariable Long employeeId){
+    public PayrollSummary getPayrollSummary(@PathVariable Long employeeId) {
         return payrollService.calculatePayroll(employeeId);
     }
 }
